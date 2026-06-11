@@ -26,6 +26,7 @@ It supports:
 * Site default social image.
 * Network default social image on multisite.
 * Custom post/page social image fallback.
+* Basic Schema.org JSON-LD controls for WebSite, Organization, optional LocalBusiness, BreadcrumbList, BlogPosting, and WebPage.
 
 The plugin is useful for adding:
 
@@ -46,12 +47,13 @@ The plugin is useful for adding:
 * Uses the native WordPress media uploader for image fields.
 * Supports multisite network admin settings.
 * Supports individual site settings.
-* Network values output before site values.
+* Subsites inherit network values unless a field is explicitly overridden.
 * Capability checks before viewing or saving settings.
 * Nonce verification before saving.
 * Admin output escaped safely.
 * Frontend output preserved for valid scripts and meta tags.
-* Outputs social image meta tags with the requested fallback order.
+* Outputs social image meta tags using featured image, custom social image, and merged site/network defaults.
+* Outputs lightweight Schema.org JSON-LD from safe structured data controls.
 
 == Installation ==
 
@@ -120,12 +122,25 @@ Frontend fallback order:
 
 1. Post featured image.
 2. Custom post/page social image.
-3. Site default social image.
-4. Network default social image.
+3. Site default social image when that site field is overridden.
+4. Network default social image when the site field is not overridden.
 
 The plugin outputs `og:image`, `twitter:image`, and image dimension meta tags when a fallback image is available.
 
 Recommended image size: 1200 × 630 pixels.
+
+= Basic Schema.org JSON-LD =
+
+The plugin includes lightweight structured data controls for safe, general schema types:
+
+* WebSite on the front page.
+* Organization with name, logo, website URL, and SameAs social links.
+* Optional LocalBusiness with name, URL, logo, telephone, price range, and plain-text address.
+* BreadcrumbList for singular posts/pages and taxonomy archives.
+* BlogPosting for standard posts.
+* WebPage for standard pages.
+
+Schema output is generated as JSON-LD in `wp_head`. On multisite network activation, network schema values provide defaults. Individual sites can override any schema field, including disabling a schema type that is enabled at network level.
 
 == Multisite Behavior ==
 
@@ -133,15 +148,15 @@ When WordPress Multisite is enabled and the plugin is network activated:
 
 * Network Admin gets a `Primary SEO` menu.
 * Each site Admin also gets a `Primary SEO` menu.
-* Network-level values are output first.
-* Site-level values are output after network-level values.
+* Each subsite inherits network-level settings by default.
+* A site-level value is used only when the matching field is explicitly marked as an override on that subsite.
 
-Output order:
+Effective value order:
 
-1. Network value.
-2. Site value.
+1. Site override value, when override is enabled for that field.
+2. Network value, when no site override is enabled.
 
-This allows global SEO code to apply across the whole network while still allowing individual subsites to add their own SEO code.
+This lets you apply global SEO defaults across the network while still allowing individual subsites to replace a specific field when required.
 
 == Security Notes ==
 
@@ -180,9 +195,6 @@ Yes. The site-level settings page works normally on single-site WordPress.
 Yes. Network activate the plugin to use both network-level and site-level settings.
 
 
-== Screenshots ==
-1. Settings page
-
 
 == Changelog ==
 
@@ -190,3 +202,4 @@ Yes. Network activate the plugin to use both network-level and site-level settin
 * Initial release.
 * Added site, network, and per-post/page social image fields.
 * Added frontend social image fallback meta output.
+* Added Basic Schema.org JSON-LD controls and frontend structured data output.

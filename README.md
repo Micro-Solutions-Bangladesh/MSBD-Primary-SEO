@@ -42,7 +42,7 @@ msbd-primary-seo/
 - Supports WordPress Multisite.
 - Adds a site-level admin settings page.
 - Adds a network-level settings page on multisite.
-- Outputs network-level code before site-level code.
+- Subsites inherit network-level settings unless a field is explicitly overridden.
 - Uses nonce verification before saving.
 - Uses capability checks before viewing or saving.
 - Escapes admin output safely.
@@ -51,10 +51,11 @@ msbd-primary-seo/
 - Adds a network default social image field on multisite.
 - Adds a custom social image metabox for posts and pages.
 - Outputs `og:image`, `twitter:image`, and image dimension meta tags.
+- Adds Basic Schema.org JSON-LD controls for WebSite, Organization, optional LocalBusiness, BreadcrumbList, BlogPosting, and WebPage.
 
 ## Settings Fields
 
-The plugin includes three textarea fields and one image field.
+The plugin includes three textarea fields, social image fields, and Basic Schema.org JSON-LD controls.
 
 ### 1. SEO Code Before `</head>`
 
@@ -200,8 +201,8 @@ The plugin outputs social image meta tags in the frontend head using this fallba
 
 1. Post featured image.
 2. Custom post/page social image.
-3. Site default social image.
-4. Network default social image.
+3. Site default social image when the site field is overridden.
+4. Network default social image when the site field is not overridden.
 
 Generated tags:
 
@@ -214,22 +215,52 @@ Generated tags:
 
 The custom social image field appears in the post/page editor sidebar as **MSBD Social Image**. The default social image field appears on the site settings page and, on multisite, the network settings page. Recommended image size: 1200 × 630 pixels.
 
-## Frontend Output Order
 
-When both network-level and site-level values exist, the plugin outputs them in this order:
+## Basic Schema.org JSON-LD Controls
 
-1. Network value
-2. Site value
+The settings page includes lightweight structured data controls for safe, general schema types:
 
-This lets you add global SEO scripts across the whole network while still allowing individual subsites to add their own code.
+- `WebSite` for the front page.
+- `Organization` with name, logo, website URL, and SameAs social links.
+- Optional `LocalBusiness` with name, URL, logo, telephone, price range, and plain-text address.
+- `BreadcrumbList` for singular posts/pages and taxonomy archives.
+- `BlogPosting` for standard posts.
+- `WebPage` for standard pages.
 
-Example frontend output:
+Organization example output:
+
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "MCQ Academy",
+  "url": "https://example.com",
+  "logo": "https://example.com/logo.png"
+}
+```
+
+The actual frontend output is grouped in a JSON-LD `@graph` and printed in `wp_head`. On multisite network activation, network-level schema values act as defaults. Site-level settings can override text, URL, image, and checkbox values, including disabling a schema type that is enabled at network level.
+
+## Network Inheritance and Site Overrides
+
+When the plugin is network activated, each subsite inherits the network value for every supported field unless that exact field is marked as an override on the subsite settings page.
+
+Effective value order:
+
+1. Site override value, when override is enabled for that field.
+2. Network value, when no site override is enabled.
+
+Example inherited frontend output:
 
 ```html
-<!-- MSBD Primary SEO: Before Head End - Network -->
+<!-- MSBD Primary SEO: Before Head End - Network Inherited -->
 ...
 <!-- /MSBD Primary SEO -->
+```
 
+Example site override frontend output:
+
+```html
 <!-- MSBD Primary SEO: Before Head End - Site -->
 ...
 <!-- /MSBD Primary SEO -->
@@ -348,7 +379,17 @@ msbdpseo_get_site_option( 'before_head_tag_end' );
 
 msbdpseo_get_network_option( 'before_head_tag_end' );
 
+msbdpseo_get_merged_option( 'before_head_tag_end' );
+
+msbdpseo_is_network_activated();
+
+msbdpseo_is_site_override_enabled( 'before_head_tag_end' );
+
 msbdpseo_should_output_frontend();
+
+msbdpseo_get_schema_graph();
+
+msbdpseo_output_schema_json_ld();
 ```
 
 ## Changelog
@@ -356,3 +397,6 @@ msbdpseo_should_output_frontend();
 ### 1.0.0
 
 Initial release.
+
+- Added site, network, and per-post/page social image fields.
+- Added Basic Schema.org JSON-LD controls and frontend structured data output.
