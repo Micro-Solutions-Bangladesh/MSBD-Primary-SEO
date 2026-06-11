@@ -15,7 +15,7 @@ It supports both:
 | Plugin Slug | `msbd-primary-seo` |
 | Text Domain | `msbd-primary-seo` |
 | Prefix | `msbdpseo` |
-| Version | `1.0.0` |
+| Version | `1.0.1` |
 
 ## File Structure
 
@@ -393,6 +393,15 @@ msbdpseo_output_schema_json_ld();
 ```
 
 ## Changelog
+
+### 1.0.1
+
+Maintenance and repository-readiness update.
+
+- Updated plugin version metadata to 1.0.1.
+- Improved multisite network inheritance and explicit subsite override handling.
+- Fixed WordPress.org Plugin Check findings for translator comments, output escaping, nonce verification, sanitized input access, and the language directory path.
+- Added the plugin language directory placeholder for the declared `Domain Path`.
 
 ### 1.0.0
 

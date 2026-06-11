@@ -417,20 +417,16 @@ if ( ! class_exists( 'MSBDPSEO_Admin' ) ) :
 		 * @return void
 		 */
 		private function save_posted_values( $scope, $section = 'general' ) {
-			$posted    = array();
-			$overrides = array();
-
-			$posted_raw = isset( $_POST['msbdpseo'] ) ? wp_unslash( $_POST['msbdpseo'] ) : array();
-
-			if ( is_array( $posted_raw ) ) {
-				$posted = $posted_raw;
+			if ( ! $this->verify_settings_nonce( $scope, $section ) ) {
+				wp_die(
+					esc_html__( 'Security check failed. Please reload the page and try again.', 'msbd-primary-seo' ),
+					esc_html__( 'Invalid request', 'msbd-primary-seo' ),
+					array( 'response' => 403 )
+				);
 			}
 
-			$overrides_raw = isset( $_POST['msbdpseo_override'] ) ? wp_unslash( $_POST['msbdpseo_override'] ) : array();
-
-			if ( is_array( $overrides_raw ) ) {
-				$overrides = $overrides_raw;
-			}
+			$posted    = $this->get_posted_settings_array( 'msbdpseo' );
+			$overrides = $this->get_posted_settings_array( 'msbdpseo_override' );
 
 			if ( 'schema' === $section ) {
 				$this->save_schema_values( $posted, $scope, $overrides );
@@ -438,6 +434,45 @@ if ( ! class_exists( 'MSBDPSEO_Admin' ) ) :
 			}
 
 			$this->save_general_values( $posted, $scope, $overrides );
+		}
+
+		/**
+		 * Verify the settings form nonce before processing posted settings data.
+		 *
+		 * @param string $scope   Either site or network.
+		 * @param string $section Either general or schema.
+		 * @return bool
+		 */
+		private function verify_settings_nonce( $scope, $section ) {
+			$action = 'schema' === $section
+				? ( 'network' === $scope ? self::NETWORK_SCHEMA_SAVE_ACTION : self::SITE_SCHEMA_SAVE_ACTION )
+				: ( 'network' === $scope ? self::NETWORK_SAVE_ACTION : self::SITE_SAVE_ACTION );
+
+			$nonce = filter_input( INPUT_POST, self::NONCE_NAME, FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+
+			if ( ! is_string( $nonce ) || '' === $nonce ) {
+				return false;
+			}
+
+			return (bool) wp_verify_nonce( $nonce, $action );
+		}
+
+		/**
+		 * Retrieve a posted plugin settings array. Values are sanitized later per field type.
+		 *
+		 * @param string $key Posted array key.
+		 * @return array<string, mixed>
+		 */
+		private function get_posted_settings_array( $key ) {
+			$key = sanitize_key( $key );
+
+			if ( '' === $key ) {
+				return array();
+			}
+
+			$posted = filter_input( INPUT_POST, $key, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+
+			return is_array( $posted ) ? $posted : array();
 		}
 
 		/**

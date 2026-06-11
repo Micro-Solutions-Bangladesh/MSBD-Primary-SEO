@@ -690,10 +690,12 @@ if ( ! class_exists( 'MSBDPSEO_Helper' ) ) :
 			}
 
 			$comment = $fields[ $field ]['comment'];
+			/* translators: %s: SEO output location label. */
 			$label   = sprintf( __( '%s - Site', 'msbd-primary-seo' ), $comment );
 			$value   = self::get_site_option_value( $field, '' );
 
 			if ( self::should_use_network_defaults() && ! self::is_site_override_enabled( $field ) ) {
+				/* translators: %s: SEO output location label. */
 				$label = sprintf( __( '%s - Network Inherited', 'msbd-primary-seo' ), $comment );
 				$value = self::get_network_option_value( $field, '' );
 			}
@@ -725,13 +727,13 @@ if ( ! class_exists( 'MSBDPSEO_Helper' ) ) :
 				return;
 			}
 
-			$image_url = esc_url( $image[0] );
+			$image_url = $image[0];
 			$width     = ! empty( $image[1] ) ? absint( $image[1] ) : 0;
 			$height    = ! empty( $image[2] ) ? absint( $image[2] ) : 0;
 
 			echo "\n<!-- MSBD Primary SEO: Social Image -->\n";
-			echo '<meta property="og:image" content="' . $image_url . '" />' . "\n";
-			echo '<meta name="twitter:image" content="' . $image_url . '" />' . "\n";
+			echo '<meta property="og:image" content="' . esc_url( $image_url ) . '" />' . "\n";
+			echo '<meta name="twitter:image" content="' . esc_url( $image_url ) . '" />' . "\n";
 
 			if ( $width && $height ) {
 				echo '<meta property="og:image:width" content="' . esc_attr( (string) $width ) . '" />' . "\n";

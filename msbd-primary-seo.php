@@ -3,7 +3,7 @@
  * Plugin Name: MSBD Primary SEO
  * Plugin URI:  https://github.com/Micro-Solutions-Bangladesh/MSBD-Primary-SEO
  * Description: Lightweight SEO utility plugin for injecting SEO scripts, meta tags, and markup into frontend head, body start, and footer locations. Supports single-site and multisite.
- * Version:     1.0.0
+ * Version:     1.0.1
  * Requires at least: 5.3
  * Requires PHP: 7.4
  * Author: Micro Solutions BD
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'MSBDPSEO_VERSION', '1.0.0' );
+define( 'MSBDPSEO_VERSION', '1.0.1' );
 define( 'MSBDPSEO_FILE', __FILE__ );
 define( 'MSBDPSEO_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MSBDPSEO_URL', plugin_dir_url( __FILE__ ) );

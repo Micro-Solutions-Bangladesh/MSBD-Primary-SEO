@@ -4,7 +4,7 @@ Tags: seo, header scripts, footer scripts, meta tags, multisite, structured data
 Requires at least: 5.3
 Requires PHP: 7.4
 Tested up to: 7.0
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -196,7 +196,16 @@ Yes. Network activate the plugin to use both network-level and site-level settin
 
 
 
+== Upgrade Notice ==
+
+= 1.0.1 =
+Recommended update for multisite inheritance handling, WordPress.org Plugin Check compatibility, and safer settings form processing.
+
 == Changelog ==
+
+= 1.0.1 =
+* Fixed WordPress.org Plugin Check findings for translator comments, output escaping, nonce verification, sanitized input access, and the language directory path.
+* Added the plugin language directory placeholder for the declared Domain Path.
 
 = 1.0.0 =
 * Initial release.
